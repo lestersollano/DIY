@@ -1,24 +1,44 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+import { useFonts } from "expo-font"
+import { LinearGradient } from "expo-linear-gradient"
+import { Tabs } from "expo-router"
+import { HomeIcon } from "lucide-react-native"
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+	const [fontsLoaded] = useFonts({
+		Bold: require("../assets/fonts/glacial-indifference.bold.otf"),
+		Regular: require("../assets/fonts/glacial-indifference.regular.otf"),
+	})
 
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+	if (!fontsLoaded) return null
+
+	return (
+		<Tabs
+			screenOptions={{
+				tabBarStyle: {},
+				headerTitle: () => null, // hide title
+				headerStyle: { height: 50 },
+			}}
+		>
+			<Tabs.Screen
+				name="index"
+				options={{
+					tabBarIcon: ({ color, size }) => (
+						<HomeIcon color={color} size={size} />
+					),
+					headerBackground: () => (
+						<LinearGradient
+							colors={["#1ED208", "#50E2CD"]}
+							start={{ x: 0.14644661, y: 0.14644661 }}
+							end={{ x: 0.85355339, y: 0.85355339 }}
+							style={{ flex: 1 }}
+						/>
+					),
+				}}
+			/>
+			<Tabs.Screen name="favorites" />
+			<Tabs.Screen name="recognition" />
+			<Tabs.Screen name="history" />
+			<Tabs.Screen name="account" />
+		</Tabs>
+	)
 }
