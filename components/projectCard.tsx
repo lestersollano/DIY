@@ -1,7 +1,13 @@
-import { HeartIcon } from "lucide-react-native"
+import type { ProjectProps } from "@/interfaces/interfaces"
+import { Ionicons } from "@react-native-vector-icons/ionicons"
 import { Image, Text, View } from "react-native"
 
-export default function ProjectCard() {
+export default function ProjectCard({
+	title = "Unknown",
+	author = "Unknown",
+	shortDescription = "No description provided.",
+	favorite = false,
+}: ProjectProps) {
 	return (
 		<View
 			style={{
@@ -47,7 +53,7 @@ export default function ProjectCard() {
 								fontSize: 12,
 							}}
 						>
-							DIY Tin Can Organizers
+							{title}
 						</Text>
 						<Text
 							style={{
@@ -56,10 +62,14 @@ export default function ProjectCard() {
 								fontSize: 8,
 							}}
 						>
-							By Ric Magbitang
+							by {author}
 						</Text>
 					</View>
-					<HeartIcon color={"#5C5C5C"} />
+					<Ionicons
+						name="heart"
+						size={25}
+						color={favorite ? "#FF6B6B" : "#5C5C5C"}
+					/>
 				</View>
 				<Text
 					style={{
@@ -71,9 +81,7 @@ export default function ProjectCard() {
 					numberOfLines={4}
 					ellipsizeMode="tail"
 				>
-					Turn simple tin cans into cute and useful organizers using burlap,
-					lace, buttons, ribbon, and recycled paper for a fun and eco-friendly
-					craft project.
+					{shortDescription}
 				</Text>
 			</View>
 		</View>

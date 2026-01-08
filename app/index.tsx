@@ -214,21 +214,18 @@ export default function Index() {
 						flex: 1,
 					}}
 				>
-					<ProjectCard />
-					<ProjectCard />
-					<ProjectCard />
-					<ProjectCard />
-					<ProjectCard />
-					<ProjectCard />
-					<ProjectCard />
-					<ProjectCard />
-					<ProjectCard />
-					<ProjectCard />
-					<ProjectCard />
-					<ProjectCard />
-					<ProjectCard />
-					<ProjectCard />
-					<ProjectCard />
+					<ProjectCard
+						title="Tin Can Organizer"
+						author="Ric Magbitang"
+						shortDescription="Turn simple tin cans into cute and useful organizers using burlap, lace, buttons, ribbon, and recycled paper for a fun and eco-friendly craft project."
+						favorite={true}
+					/>
+					<ProjectCard
+						title="Tin Can Organizer"
+						author="Ric Magbitang"
+						shortDescription="Turn simple tin cans into cute and useful organizers using burlap, lace, buttons, ribbon, and recycled paper for a fun and eco-friendly craft project."
+						favorite={true}
+					/>
 				</ScrollView>
 			</View>
 		</ImageBackground>

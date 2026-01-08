@@ -35,10 +35,55 @@ export default function RootLayout() {
 					),
 				}}
 			/>
-			<Tabs.Screen name="favorites" />
+			<Tabs.Screen
+				name="favorites"
+				options={{
+					tabBarIcon: ({ color, size }) => (
+						<HomeIcon color={color} size={size} />
+					),
+					headerBackground: () => (
+						<LinearGradient
+							colors={["#1ED208", "#50E2CD"]}
+							start={{ x: 0.14644661, y: 0.14644661 }}
+							end={{ x: 0.85355339, y: 0.85355339 }}
+							style={{ flex: 1 }}
+						/>
+					),
+				}}
+			/>
 			<Tabs.Screen name="recognition" />
-			<Tabs.Screen name="history" />
-			<Tabs.Screen name="account" />
+			<Tabs.Screen
+				name="history"
+				options={{
+					tabBarIcon: ({ color, size }) => (
+						<HomeIcon color={color} size={size} />
+					),
+					headerBackground: () => (
+						<LinearGradient
+							colors={["#1ED208", "#50E2CD"]}
+							start={{ x: 0.14644661, y: 0.14644661 }}
+							end={{ x: 0.85355339, y: 0.85355339 }}
+							style={{ flex: 1 }}
+						/>
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="settings"
+				options={{
+					tabBarIcon: ({ color, size }) => (
+						<HomeIcon color={color} size={size} />
+					),
+					headerBackground: () => (
+						<LinearGradient
+							colors={["#1ED208", "#50E2CD"]}
+							start={{ x: 0.14644661, y: 0.14644661 }}
+							end={{ x: 0.85355339, y: 0.85355339 }}
+							style={{ flex: 1 }}
+						/>
+					),
+				}}
+			/>
 		</Tabs>
 	)
 }
