@@ -1,6 +1,7 @@
 import type { ProjectProps } from "@/interfaces/interfaces"
 import { Ionicons } from "@react-native-vector-icons/ionicons"
-import { Image, Text, View } from "react-native"
+import { useRouter } from "expo-router"
+import { Image, Pressable, Text, View } from "react-native"
 
 export default function ProjectCard({
 	title = "Unknown",
@@ -8,8 +9,10 @@ export default function ProjectCard({
 	shortDescription = "No description provided.",
 	favorite = false,
 }: ProjectProps) {
+	const router = useRouter()
+
 	return (
-		<View
+		<Pressable
 			style={{
 				backgroundColor: "#1F1F1F",
 				padding: 15,
@@ -17,6 +20,9 @@ export default function ProjectCard({
 				borderRadius: 10,
 				flexDirection: "row",
 				marginBottom: 20,
+			}}
+			onPress={() => {
+				router.push("/project")
 			}}
 		>
 			<Image
@@ -84,6 +90,6 @@ export default function ProjectCard({
 					{shortDescription}
 				</Text>
 			</View>
-		</View>
+		</Pressable>
 	)
 }

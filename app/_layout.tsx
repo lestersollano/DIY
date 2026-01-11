@@ -69,7 +69,7 @@ export default function RootLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="settings"
+				name="account"
 				options={{
 					tabBarIcon: ({ color, size }) => (
 						<HomeIcon color={color} size={size} />

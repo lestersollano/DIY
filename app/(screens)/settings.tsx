@@ -6,7 +6,7 @@ import { Image, ImageBackground, ScrollView, Text, View } from "react-native"
 export default function Settings() {
 	return (
 		<ImageBackground
-			source={require("../assets/images/background.png")}
+			source={require("../../assets/images/background.png")}
 			style={{ flex: 1 }}
 			resizeMode="cover"
 		>
@@ -71,7 +71,7 @@ export default function Settings() {
 							}}
 						>
 							<Image
-								source={require("../assets/images/profile.jpg")}
+								source={require("../../assets/images/profile.jpg")}
 								style={{
 									width: 64,
 									height: 64,
@@ -228,7 +228,7 @@ export default function Settings() {
 										fontSize: 12,
 									}}
 								>
-									Password
+									Notifications
 								</Text>
 							</View>
 						</View>

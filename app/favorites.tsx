@@ -6,7 +6,9 @@ export default function Favorites() {
 	return (
 		<ImageBackground
 			source={require("../assets/images/background.png")}
-			style={{ flex: 1 }}
+			style={{
+				flex: 1,
+			}}
 			resizeMode="cover"
 		>
 			<View
@@ -29,7 +31,11 @@ export default function Favorites() {
 						marginBottom: 20,
 					}}
 				>
-					<View style={{ flex: 1 }}>
+					<View
+						style={{
+							flex: 1,
+						}}
+					>
 						<Text
 							style={{
 								color: "white",
