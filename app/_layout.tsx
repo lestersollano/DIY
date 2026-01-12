@@ -124,6 +124,7 @@ export default function RootLayout() {
                             style={{ flex: 1 }}
                         />
                     ),
+                    tabBarStyle: { display: "none" },
                 }}
             />
         </Tabs>

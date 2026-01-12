@@ -59,15 +59,17 @@ export default function Account() {
                     lestermatthewsollano@gmail.com
                 </Text>
             </View>
-            <View
+            <ImageBackground
+                source={require("../assets/images/gradient.png")}
                 style={{
                     flexDirection: "row",
-                    backgroundColor: "#37D86B",
                     marginTop: 20,
                     marginHorizontal: 20,
                     paddingVertical: 20,
                     borderRadius: 10,
+                    overflow: "hidden",
                 }}
+                imageStyle={{ borderRadius: 10 }}
             >
                 <View
                     style={{
@@ -131,7 +133,7 @@ export default function Account() {
                         8
                     </Text>
                 </View>
-            </View>
+            </ImageBackground>
             <View
                 style={{
                     flexDirection: "row",
