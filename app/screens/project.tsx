@@ -17,7 +17,12 @@ export default function Project() {
         "pink paint or spray paint",
         "googly eyes",
         "pink paper or foam",
+        "cutter or scissors",
     ];
+    const note =
+        "Always be careful when using scissors or cutters. Ask for adult help if needed. You can make your piggy bank more creative by adding stickers, glitter, or ribbons. This activity doesn't just help reduce plastic waste, it also teaches responsibility and the joy of saving money!";
+
+    const instructions = ["Clean the bottle", "Paint it pink"];
     return (
         <ImageBackground
             source={require("../../assets/images/background.png")}
@@ -128,7 +133,7 @@ export default function Project() {
                                 textAlign: "center",
                             }}
                         >
-                            title
+                            DIY Piggy Bank from Recycled Plastic Bottle
                         </Text>
                     </View>
                 </LinearGradient>
@@ -179,6 +184,99 @@ export default function Project() {
                             }}
                         >
                             ‣ {material}
+                        </Text>
+                    ))}
+                </View>
+                <View
+                    style={{
+                        marginTop: 20,
+                        padding: 20,
+                        backgroundColor: "#1f1f1f",
+                        marginHorizontal: 20,
+                        borderRadius: 10,
+                    }}
+                >
+                    <Text
+                        style={{
+                            color: "white",
+                            fontFamily: "Bold",
+                            fontSize: 12,
+                        }}
+                    >
+                        Note:
+                    </Text>
+                    <Text
+                        style={{
+                            color: "white",
+                            fontFamily: "Regular",
+                            fontSize: 12,
+                            marginTop: 20,
+                            textAlign: "justify",
+                        }}
+                    >
+                        {note}
+                    </Text>
+                </View>
+                <View
+                    style={{
+                        marginTop: 20,
+                        padding: 20,
+                        backgroundColor: "#1f1f1f",
+                        marginHorizontal: 20,
+                        borderRadius: 10,
+                    }}
+                >
+                    <Text
+                        style={{
+                            color: "white",
+                            fontFamily: "Bold",
+                            fontSize: 12,
+                        }}
+                    >
+                        Instructions:
+                    </Text>
+                    <Text
+                        style={{
+                            color: "white",
+                            fontFamily: "Regular",
+                            fontSize: 12,
+                            marginTop: 20,
+                            textAlign: "justify",
+                        }}
+                    >
+                        {note}
+                    </Text>
+                </View>
+                <View
+                    style={{
+                        marginTop: 20,
+                        padding: 20,
+                        backgroundColor: "#1f1f1f",
+                        marginHorizontal: 20,
+                        borderRadius: 10,
+                        marginBottom: "50%",
+                    }}
+                >
+                    <Text
+                        style={{
+                            color: "white",
+                            fontFamily: "Bold",
+                            fontSize: 12,
+                        }}
+                    >
+                        Instructions:
+                    </Text>
+                    {instructions.map((inst, index) => (
+                        <Text
+                            key={index}
+                            style={{
+                                color: "white",
+                                fontFamily: "Regular",
+                                fontSize: 12,
+                                marginTop: 20,
+                            }}
+                        >
+                            ‣ {inst}
                         </Text>
                     ))}
                 </View>
