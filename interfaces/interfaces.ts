@@ -1,11 +1,14 @@
-export type ProjectProps = {
-    title?: string;
-    author?: string;
-    shortDescription?: string;
-    longDescription?: string;
-    image?: any;
-    favorite?: boolean;
-    materials?: string[];
-    note?: string;
-    instructions?: string[];
-};
+export interface Project {
+	id?: string
+	imageUri?: string
+	title?: string
+	description?: string
+	materials?: string[]
+	instructions?: string[]
+	notes?: string
+	mainMaterial?: string
+	author?: string
+	createdAt?: number
+	lastOpenedAt?: number
+	favorite?: boolean
+}
