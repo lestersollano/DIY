@@ -12,13 +12,9 @@ import {
 
 export default function Project() {
 	const router = useRouter()
-	const materials = [
-		"1 plastic bottle",
-		"pink paint or spray paint",
-		"googly eyes",
-		"pink paper or foam",
-		"cutter or scissors",
-	]
+
+	const materials = [""]
+
 	const note =
 		"Always be careful when using scissors or cutters. Ask for adult help if needed. You can make your piggy bank more creative by adding stickers, glitter, or ribbons. This activity doesn't just help reduce plastic waste, it also teaches responsibility and the joy of saving money!"
 

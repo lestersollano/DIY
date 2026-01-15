@@ -17,7 +17,7 @@ export default function Account() {
 		<View style={styles.container}>
 			<View style={styles.bannerWrap}>
 				<ImageBackground
-					source={require("../assets/images/leaves.jpg")}
+					source={require("../../assets/images/leaves.jpg")}
 					style={styles.banner}
 					imageStyle={styles.bannerImage}
 					resizeMode="cover"
@@ -26,7 +26,7 @@ export default function Account() {
 				<View style={styles.avatarWrap}>
 					<View style={styles.avatarBorder}>
 						<Image
-							source={require("../assets/images/profile.jpg")} // replace with your avatar
+							source={require("../../assets/images/profile.jpg")} // replace with your avatar
 							style={styles.avatar}
 						/>
 					</View>
@@ -59,7 +59,7 @@ export default function Account() {
 				</Text>
 			</View>
 			<ImageBackground
-				source={require("../assets/images/gradient.png")}
+				source={require("../../assets/images/gradient.png")}
 				style={{
 					flexDirection: "row",
 					marginTop: 20,
@@ -175,7 +175,7 @@ export default function Account() {
 						borderRadius: 10,
 					}}
 					onPress={() => {
-						router.push("/screens/create")
+						router.push("/account/create")
 					}}
 				>
 					<Ionicons name="add" color="white" size={20} />

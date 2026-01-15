@@ -3,13 +3,7 @@ import { Ionicons } from "@react-native-vector-icons/ionicons"
 import { useRouter } from "expo-router"
 import { Image, Text, TouchableOpacity, View } from "react-native"
 
-export default function ProjectCard({
-	title = "Unknown",
-	author = "Unknown",
-	description = "No description provided.",
-	favorite = false,
-	imageUri,
-}: Project) {
+export default function ProjectCard(project: Project) {
 	const router = useRouter()
 
 	return (
@@ -23,11 +17,14 @@ export default function ProjectCard({
 				marginBottom: 20,
 			}}
 			onPress={() => {
-				router.push("/screens/project")
+				router.push({
+					pathname: "/screens/project",
+					params: { id: project.id },
+				})
 			}}
 		>
 			<Image
-				source={{ uri: imageUri }}
+				source={{ uri: project.imageUri }}
 				style={{
 					width: 100,
 					height: 100,
@@ -60,7 +57,7 @@ export default function ProjectCard({
 								fontSize: 12,
 							}}
 						>
-							{title}
+							{project.title}
 						</Text>
 						<Text
 							style={{
@@ -69,13 +66,13 @@ export default function ProjectCard({
 								fontSize: 8,
 							}}
 						>
-							by {author}
+							by {project.author}
 						</Text>
 					</View>
 					<Ionicons
 						name="heart"
 						size={25}
-						color={favorite ? "#FF6B6B" : "#5C5C5C"}
+						color={project.favorite ? "#FF6B6B" : "#5C5C5C"}
 					/>
 				</View>
 				<Text
@@ -88,7 +85,7 @@ export default function ProjectCard({
 					numberOfLines={4}
 					ellipsizeMode="tail"
 				>
-					{description}
+					{project.description}
 				</Text>
 			</View>
 		</TouchableOpacity>

@@ -5,7 +5,7 @@ import { ImageBackground, ScrollView, Text, View } from "react-native"
 export default function History() {
 	return (
 		<ImageBackground
-			source={require("../assets/images/background.png")}
+			source={require("../../assets/images/background.png")}
 			style={{ flex: 1 }}
 			resizeMode="cover"
 		>
@@ -53,7 +53,7 @@ export default function History() {
 					<ProjectCard
 						title="Tin Can Organizer"
 						author="Ric Magbitang"
-						shortDescription="Turn simple tin cans into cute and useful organizers using burlap, lace, buttons, ribbon, and recycled paper for a fun and eco-friendly craft project."
+						description="Turn simple tin cans into cute and useful organizers using burlap, lace, buttons, ribbon, and recycled paper for a fun and eco-friendly craft project."
 						favorite={true}
 					/>
 				</ScrollView>
