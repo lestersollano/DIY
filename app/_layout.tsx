@@ -1,132 +1,25 @@
-import { useFonts } from "expo-font"
-import { LinearGradient } from "expo-linear-gradient"
-import { Tabs } from "expo-router"
-import { HomeIcon } from "lucide-react-native"
+import { ProjectsProvider } from "@/lib/ProjectsContext";
+import { Stack } from "expo-router";
 
 export default function RootLayout() {
-	const [fontsLoaded] = useFonts({
-		Bold: require("../assets/fonts/glacial-indifference.bold.otf"),
-		Regular: require("../assets/fonts/glacial-indifference.regular.otf"),
-	})
+    return (
+        <ProjectsProvider>
+            <Stack screenOptions={{ headerShown: false }}>
+                {/* Tabs */}
+                <Stack.Screen
+                    name="(tabs)"
+                    options={{ animation: "ios_from_right" }}
+                />
 
-	if (!fontsLoaded) return null
-
-	return (
-		<Tabs
-			screenOptions={{
-				tabBarStyle: {},
-				headerTitle: () => null, // hide title
-				headerStyle: { height: 50 },
-			}}
-		>
-			<Tabs.Screen
-				name="index"
-				options={{
-					tabBarIcon: ({ color, size }) => (
-						<HomeIcon color={color} size={size} />
-					),
-					headerBackground: () => (
-						<LinearGradient
-							colors={["#1ED208", "#50E2CD"]}
-							start={{ x: 0.14644661, y: 0.14644661 }}
-							end={{ x: 0.85355339, y: 0.85355339 }}
-							style={{ flex: 1 }}
-						/>
-					),
-				}}
-			/>
-			<Tabs.Screen
-				name="favorites"
-				options={{
-					tabBarIcon: ({ color, size }) => (
-						<HomeIcon color={color} size={size} />
-					),
-					headerBackground: () => (
-						<LinearGradient
-							colors={["#1ED208", "#50E2CD"]}
-							start={{ x: 0.14644661, y: 0.14644661 }}
-							end={{ x: 0.85355339, y: 0.85355339 }}
-							style={{ flex: 1 }}
-						/>
-					),
-				}}
-			/>
-			<Tabs.Screen name="recognition" />
-			<Tabs.Screen
-				name="history"
-				options={{
-					tabBarIcon: ({ color, size }) => (
-						<HomeIcon color={color} size={size} />
-					),
-					headerBackground: () => (
-						<LinearGradient
-							colors={["#1ED208", "#50E2CD"]}
-							start={{ x: 0.14644661, y: 0.14644661 }}
-							end={{ x: 0.85355339, y: 0.85355339 }}
-							style={{ flex: 1 }}
-						/>
-					),
-				}}
-			/>
-			<Tabs.Screen
-				name="account"
-				options={{
-					tabBarIcon: ({ color, size }) => (
-						<HomeIcon color={color} size={size} />
-					),
-					headerBackground: () => (
-						<LinearGradient
-							colors={["#1ED208", "#50E2CD"]}
-							start={{ x: 0.14644661, y: 0.14644661 }}
-							end={{ x: 0.85355339, y: 0.85355339 }}
-							style={{ flex: 1 }}
-						/>
-					),
-				}}
-			/>
-			<Tabs.Screen
-				name="screens/project"
-				options={{
-					href: null,
-					headerBackground: () => (
-						<LinearGradient
-							colors={["#1ED208", "#50E2CD"]}
-							start={{ x: 0.14644661, y: 0.14644661 }}
-							end={{ x: 0.85355339, y: 0.85355339 }}
-							style={{ flex: 1 }}
-						/>
-					),
-				}}
-			/>
-			<Tabs.Screen
-				name="screens/settings"
-				options={{
-					href: null,
-					headerBackground: () => (
-						<LinearGradient
-							colors={["#1ED208", "#50E2CD"]}
-							start={{ x: 0.14644661, y: 0.14644661 }}
-							end={{ x: 0.85355339, y: 0.85355339 }}
-							style={{ flex: 1 }}
-						/>
-					),
-				}}
-			/>
-			<Tabs.Screen
-				name="screens/create"
-				options={{
-					href: null,
-					headerBackground: () => (
-						<LinearGradient
-							colors={["#1ED208", "#50E2CD"]}
-							start={{ x: 0.14644661, y: 0.14644661 }}
-							end={{ x: 0.85355339, y: 0.85355339 }}
-							style={{ flex: 1 }}
-						/>
-					),
-					tabBarStyle: { display: "none" },
-				}}
-			/>
-		</Tabs>
-	)
+                {/* Global screens */}
+                <Stack.Screen
+                    name="project"
+                    options={{
+                        animation: "none",
+                    }}
+                />
+                <Stack.Screen name="settings" />
+            </Stack>
+        </ProjectsProvider>
+    );
 }
