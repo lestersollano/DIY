@@ -12,3 +12,11 @@ export interface Project {
 	lastOpenedAt?: number
 	favorite?: boolean
 }
+
+export interface Account {
+	id: string
+	name: string
+	email: string
+	avatarUri?: string
+	createdAt: number
+}

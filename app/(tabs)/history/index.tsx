@@ -1,57 +1,27 @@
-import { LinearGradient } from "expo-linear-gradient";
-import { ImageBackground, ScrollView, Text, View } from "react-native";
+import HeaderBack from "@/components/headerBack"
+import { ImageBackground, ScrollView, View } from "react-native"
 
 export default function History() {
-    return (
-        <ImageBackground
-            source={require("../../../assets/images/background.png")}
-            style={{ flex: 1 }}
-            resizeMode="cover"
-        >
-            <View
-                style={{
-                    flex: 1,
-                }}
-            >
-                <LinearGradient
-                    colors={["#1ED208", "#50E2CD"]}
-                    start={{ x: 0.14644661, y: 0.14644661 }}
-                    end={{ x: 0.85355339, y: 0.85355339 }}
-                    style={{
-                        margin: 20,
-                        paddingVertical: 15,
-                        borderRadius: 10,
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        marginBottom: 20,
-                    }}
-                >
-                    <View style={{ flex: 1 }}>
-                        <Text
-                            style={{
-                                color: "white",
-                                fontFamily: "Bold",
-                                fontSize: 15,
-                                textShadowColor: "rgba(0,0,0,0.6)",
-                                textShadowOffset: { width: 0, height: 1 },
-                                textShadowRadius: 3,
-                                textAlign: "center",
-                            }}
-                        >
-                            HISTORY
-                        </Text>
-                    </View>
-                </LinearGradient>
-                <ScrollView
-                    style={{
-                        flex: 1,
-                    }}
-                >
-                    {/* TODO: project cards based on history */}
-                </ScrollView>
-            </View>
-        </ImageBackground>
-    );
+	return (
+		<ImageBackground
+			source={require("../../../assets/images/background.png")}
+			style={{ flex: 1 }}
+			resizeMode="cover"
+		>
+			<View
+				style={{
+					flex: 1,
+				}}
+			>
+				<HeaderBack title="HISTORY" />
+				<ScrollView
+					style={{
+						flex: 1,
+					}}
+				>
+					{/* TODO: project cards based on history */}
+				</ScrollView>
+			</View>
+		</ImageBackground>
+	)
 }
