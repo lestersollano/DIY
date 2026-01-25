@@ -8,19 +8,13 @@ export default function RootLayout() {
 			<ProjectsProvider>
 				<Stack screenOptions={{ headerShown: false }}>
 					{/* Tabs */}
-					<Stack.Screen
-						name="(tabs)"
-						options={{ animation: "ios_from_right" }}
-					/>
+					<Stack.Screen name="(tabs)" />
 
 					{/* Global screens */}
-					<Stack.Screen
-						name="project"
-						options={{
-							animation: "none",
-						}}
-					/>
+					<Stack.Screen name="project" />
 					<Stack.Screen name="settings" />
+					<Stack.Screen name="createAccount" />
+					<Stack.Screen name="results" />
 				</Stack>
 			</ProjectsProvider>
 		</AccountProvider>

@@ -1,13 +1,8 @@
+import { RecognitionTab } from "@/components/recognitionTab"
 import { useFonts } from "expo-font"
 import { LinearGradient } from "expo-linear-gradient"
 import { Tabs } from "expo-router"
-import {
-	ClockIcon,
-	HeartIcon,
-	HomeIcon,
-	ScanIcon,
-	UserIcon,
-} from "lucide-react-native"
+import { ClockIcon, HeartIcon, HomeIcon, UserIcon } from "lucide-react-native"
 
 export default function RootLayout() {
 	const [fontsLoaded] = useFonts({
@@ -20,10 +15,14 @@ export default function RootLayout() {
 	return (
 		<Tabs
 			screenOptions={{
-				tabBarStyle: {},
+				tabBarStyle: {
+					backgroundColor: "black",
+					borderTopColor: "black",
+				},
 				headerTitle: () => null, // hide title
 				headerStyle: { height: 50 },
-				// tabBarShowLabel: false,
+				tabBarShowLabel: false,
+				tabBarActiveTintColor: "#1ED208",
 			}}
 		>
 			<Tabs.Screen
@@ -56,9 +55,7 @@ export default function RootLayout() {
 				name="recognition"
 				options={{
 					headerShown: false,
-					tabBarIcon: ({ color, size }) => (
-						<ScanIcon color={color} size={size} />
-					),
+					tabBarButton: RecognitionTab,
 				}}
 			/>
 			<Tabs.Screen

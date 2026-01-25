@@ -17,7 +17,7 @@ import {
 
 function Account() {
 	const router = useRouter()
-	const { account, setAccount, updateAccount, clearAccount } = useAccount()
+	const { account, setAccount, updateAccount } = useAccount()
 	const [acc, setAcc] = useState<AccountType>({
 		id: "user",
 		name: "",

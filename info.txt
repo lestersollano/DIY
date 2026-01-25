@@ -1,0 +1,46 @@
+import { useState } from "react"
+import { Text, TouchableOpacity, View } from "react-native"
+import { useTensorflowModel } from "react-native-fast-tflite"
+
+import * as ImagePicker from "expo-image-picker"
+
+export default function Recognition() {
+	const [imageUri, setImageUri] = useState<string | null>(null)
+	const pickImage = async () => {
+		const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
+		if (!permission.granted) return
+
+		const result = await ImagePicker.launchImageLibraryAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			quality: 1,
+		})
+
+		if (!result.canceled) {
+			setImageUri(result.assets[0].uri)
+		}
+	}
+
+	const plugin = useTensorflowModel(require("@/assets/final_float32.tflite"))
+
+	if (plugin.state !== "loaded") return <View></View>
+
+	const model = plugin.model
+
+	const handlePress = async () => {
+		// await pickImage()
+		// console.log(imageUri)
+		console.log(model.inputs)
+	}
+	return (
+		<View
+			style={{
+				flex: 1,
+				justifyContent: "center",
+			}}
+		>
+			<TouchableOpacity onPress={handlePress}>
+				<Text>hello</Text>
+			</TouchableOpacity>
+		</View>
+	)
+}

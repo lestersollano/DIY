@@ -18,8 +18,33 @@ export default function Settings() {
 	const { account } = useAccount()
 
 	const handleAccount = () => {
-		router.push("/settings/account")
+		router.replace("/account")
 	}
+
+	const handleUsername = () => {
+		router.push("/settings/username")
+	}
+
+	const handleEmail = () => {
+		router.push("/settings/email")
+	}
+
+	const handlePassword = () => {
+		router.push("/settings/password")
+	}
+
+	const handleAboutApp = () => {
+		router.push("/settings/aboutApp")
+	}
+
+	const handleDelete = () => {
+		router.push("/settings/deleteAccount")
+	}
+
+	const handleLogOut = () => {
+		router.push("/settings/logOut")
+	}
+
 	return (
 		<ImageBackground
 			source={require("../../assets/images/background.png")}
@@ -62,7 +87,7 @@ export default function Settings() {
 								source={
 									account !== null
 										? { uri: account.avatarUri }
-										: require("../../assets/images/profile.jpg")
+										: require("../../assets/images/profile.png")
 								}
 								style={{
 									width: 64,
@@ -104,7 +129,7 @@ export default function Settings() {
 							marginBottom: 20,
 						}}
 					>
-						OTHER SETTINGS
+						ACCOUNT INFORMATION
 					</Text>
 					<TouchableOpacity
 						style={{
@@ -122,7 +147,7 @@ export default function Settings() {
 							flexDirection: "row",
 							alignItems: "center",
 						}}
-						onPress={handleAccount}
+						onPress={handleUsername}
 					>
 						<View
 							style={{
@@ -140,13 +165,13 @@ export default function Settings() {
 										fontSize: 12,
 									}}
 								>
-									Profile Details
+									Username
 								</Text>
 							</View>
 						</View>
 						<ChevronRightIcon color={"#6B6B6B"} />
 					</TouchableOpacity>
-					<View
+					<TouchableOpacity
 						style={{
 							borderBottomWidth: 0,
 
@@ -161,6 +186,47 @@ export default function Settings() {
 							flexDirection: "row",
 							alignItems: "center",
 						}}
+						onPress={handleEmail}
+					>
+						<View
+							style={{
+								flexDirection: "row",
+								gap: 20,
+								alignItems: "center",
+							}}
+						>
+							<Ionicons name="mail-outline" size={32} color={"white"} />
+							<View>
+								<Text
+									style={{
+										color: "white",
+										fontFamily: "Bold",
+										fontSize: 12,
+									}}
+								>
+									Email
+								</Text>
+							</View>
+						</View>
+						<ChevronRightIcon color={"#6B6B6B"} />
+					</TouchableOpacity>
+					<TouchableOpacity
+						style={{
+							marginHorizontal: 20,
+							paddingVertical: 20,
+							paddingHorizontal: 30,
+							backgroundColor: "#2A2A2A",
+							borderWidth: 1,
+							borderStyle: "solid",
+							borderColor: "#6B6B6B",
+							justifyContent: "space-between",
+							flexDirection: "row",
+							alignItems: "center",
+							borderBottomLeftRadius: 10,
+							borderBottomRightRadius: 10,
+							marginBottom: 20,
+						}}
+						onPress={handlePassword}
 					>
 						<View
 							style={{
@@ -183,51 +249,8 @@ export default function Settings() {
 							</View>
 						</View>
 						<ChevronRightIcon color={"#6B6B6B"} />
-					</View>
-					<View
-						style={{
-							marginHorizontal: 20,
-							paddingVertical: 20,
-							paddingHorizontal: 30,
-							backgroundColor: "#2A2A2A",
-							borderWidth: 1,
-							borderStyle: "solid",
-							borderColor: "#6B6B6B",
-							justifyContent: "space-between",
-							flexDirection: "row",
-							alignItems: "center",
-							borderBottomLeftRadius: 10,
-							borderBottomRightRadius: 10,
-							marginBottom: 20,
-						}}
-					>
-						<View
-							style={{
-								flexDirection: "row",
-								gap: 20,
-								alignItems: "center",
-							}}
-						>
-							<Ionicons
-								name="notifications-outline"
-								size={32}
-								color={"white"}
-							/>
-							<View>
-								<Text
-									style={{
-										color: "white",
-										fontFamily: "Bold",
-										fontSize: 12,
-									}}
-								>
-									Notifications
-								</Text>
-							</View>
-						</View>
-						<ChevronRightIcon color={"#6B6B6B"} />
-					</View>
-					<View
+					</TouchableOpacity>
+					<TouchableOpacity
 						style={{
 							marginHorizontal: 20,
 							paddingVertical: 20,
@@ -243,6 +266,7 @@ export default function Settings() {
 							flexDirection: "row",
 							alignItems: "center",
 						}}
+						onPress={handleAboutApp}
 					>
 						<View
 							style={{
@@ -269,8 +293,45 @@ export default function Settings() {
 							</View>
 						</View>
 						<ChevronRightIcon color={"#6B6B6B"} />
-					</View>
-					<View
+					</TouchableOpacity>
+					<TouchableOpacity
+						style={{
+							marginHorizontal: 20,
+							paddingVertical: 20,
+							paddingHorizontal: 30,
+							backgroundColor: "#2A2A2A",
+							borderWidth: 1,
+							borderStyle: "solid",
+							borderColor: "#6B6B6B",
+							justifyContent: "space-between",
+							flexDirection: "row",
+							alignItems: "center",
+						}}
+						onPress={handleDelete}
+					>
+						<View
+							style={{
+								flexDirection: "row",
+								gap: 20,
+								alignItems: "center",
+							}}
+						>
+							<Ionicons name="trash-outline" size={32} color={"white"} />
+							<View>
+								<Text
+									style={{
+										color: "white",
+										fontFamily: "Bold",
+										fontSize: 12,
+									}}
+								>
+									Delete Account
+								</Text>
+							</View>
+						</View>
+						<ChevronRightIcon color={"#6B6B6B"} />
+					</TouchableOpacity>
+					<TouchableOpacity
 						style={{
 							marginHorizontal: 20,
 							paddingVertical: 20,
@@ -285,7 +346,9 @@ export default function Settings() {
 							borderBottomLeftRadius: 10,
 							borderBottomRightRadius: 10,
 							marginBottom: 20,
+							borderTopWidth: 0,
 						}}
+						onPress={handleLogOut}
 					>
 						<View
 							style={{
@@ -294,7 +357,7 @@ export default function Settings() {
 								alignItems: "center",
 							}}
 						>
-							<Ionicons name="help-circle-outline" size={32} color={"white"} />
+							<Ionicons name="log-out-outline" size={32} color={"white"} />
 							<View>
 								<Text
 									style={{
@@ -303,12 +366,12 @@ export default function Settings() {
 										fontSize: 12,
 									}}
 								>
-									Help/FAQ
+									Log Out
 								</Text>
 							</View>
 						</View>
 						<ChevronRightIcon color={"#6B6B6B"} />
-					</View>
+					</TouchableOpacity>
 				</ScrollView>
 			</View>
 		</ImageBackground>
