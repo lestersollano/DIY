@@ -1,17 +1,44 @@
 import HeaderBack from "@/components/headerBack"
 import { useProjects } from "@/lib/ProjectsContext"
 import { LinearGradient } from "expo-linear-gradient"
-import { useLocalSearchParams } from "expo-router"
-import { Image, ImageBackground, ScrollView, Text, View } from "react-native"
+import { useLocalSearchParams, useRouter } from "expo-router"
+import { PencilIcon, TrashIcon } from "lucide-react-native"
+import {
+	Alert,
+	Image,
+	ImageBackground,
+	Linking,
+	ScrollView,
+	Text,
+	TouchableOpacity,
+	View,
+} from "react-native"
 
 export default function Project() {
+	const router = useRouter()
+
 	const { id } = useLocalSearchParams<{ id: string }>()
 
-	const { projects } = useProjects()
+	const { projects, deleteProject } = useProjects()
 
 	const project = projects.find((p) => p.id === id)
 
-	if (!projects) return <View></View>
+	const openYouTube = async () => {
+		const url = project?.youtubeURL
+
+		// @ts-ignore
+		const supported = await Linking.canOpenURL(url)
+
+		// @ts-ignore
+		await Linking.openURL(url)
+
+		console.log(supported)
+	}
+
+	if (!project) {
+		return null
+	}
+
 	return (
 		<ImageBackground
 			source={require("../assets/images/background.png")}
@@ -47,15 +74,23 @@ export default function Project() {
 							elevation: 20,
 						}}
 					>
-						<Image
-							source={{ uri: project?.imageUri }}
+						<TouchableOpacity
 							style={{
 								flex: 1,
 								width: "100%",
-								borderRadius: 10,
 							}}
-							resizeMode="cover"
-						/>
+							onPress={openYouTube}
+						>
+							<Image
+								source={{ uri: project?.imageUri }}
+								style={{
+									flex: 1,
+									width: "100%",
+									borderRadius: 10,
+								}}
+								resizeMode="cover"
+							/>
+						</TouchableOpacity>
 					</View>
 				</View>
 				<LinearGradient
@@ -175,7 +210,6 @@ export default function Project() {
 						backgroundColor: "#1f1f1f",
 						marginHorizontal: 20,
 						borderRadius: 10,
-						marginBottom: "50%",
 					}}
 				>
 					<Text
@@ -204,6 +238,56 @@ export default function Project() {
 					) : (
 						<></>
 					)}
+				</View>
+				<View
+					style={{
+						flexDirection: "row",
+						justifyContent: "flex-end",
+						padding: 20,
+						gap: 10,
+					}}
+				>
+					<TouchableOpacity
+						onPress={() => {
+							router.push({
+								pathname: "/edit",
+								params: {
+									// @ts-ignore
+									id: project.id,
+								},
+							})
+						}}
+					>
+						<PencilIcon color={"grey"} />
+					</TouchableOpacity>
+					<TouchableOpacity
+						onPress={() => {
+							Alert.alert(
+								"Delete Project",
+								"Are you sure you want to delete this project? This action cannot be undone.",
+								[
+									{
+										text: "Cancel",
+										onPress: () => {
+											console.log("canceled operation")
+										},
+										style: "cancel",
+									},
+									{
+										text: "Delete",
+										onPress: () => {
+											// @ts-ignore
+											deleteProject(project.id)
+											router.back()
+										},
+										style: "destructive",
+									},
+								],
+							)
+						}}
+					>
+						<TrashIcon color={"grey"} />
+					</TouchableOpacity>
 				</View>
 			</ScrollView>
 		</ImageBackground>

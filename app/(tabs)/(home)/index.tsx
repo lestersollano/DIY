@@ -3,8 +3,9 @@ import { useProjects } from "@/lib/ProjectsContext"
 import { LinearGradient } from "expo-linear-gradient"
 import { useRouter } from "expo-router"
 import { SearchIcon, SettingsIcon } from "lucide-react-native"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import {
+	Animated,
 	Image,
 	ImageBackground,
 	Pressable,
@@ -16,7 +17,61 @@ import {
 } from "react-native"
 import ProjectCard from "../../../components/projectCard"
 
+import { useInfo } from "@/lib/InfoContext"
+
 export default function Index() {
+	const { infoList } = useInfo()
+	const [currentIndex, setCurrentIndex] = useState(0)
+
+	// Animated values
+	const translateY = useRef(new Animated.Value(-20)).current // Starts 20px above
+	const opacity = useRef(new Animated.Value(0)).current // Starts invisible
+
+	useEffect(() => {
+		if (infoList.length === 0) return
+
+		// 1. IMMEDIATELY trigger the "Slide In" animation for the current item
+		Animated.parallel([
+			Animated.timing(translateY, {
+				toValue: 0,
+				duration: 600,
+				useNativeDriver: true,
+			}),
+			Animated.timing(opacity, {
+				toValue: 1,
+				duration: 600,
+				useNativeDriver: true,
+			}),
+		]).start()
+
+		// 2. Set the timer for the "Slide Out" and Index change
+		const currentDuration = (infoList[currentIndex]?.duration || 5) * 1000
+
+		const timeout = setTimeout(() => {
+			// Slide Out Animation
+			Animated.parallel([
+				Animated.timing(translateY, {
+					toValue: 20,
+					duration: 400,
+					useNativeDriver: true,
+				}),
+				Animated.timing(opacity, {
+					toValue: 0,
+					duration: 400,
+					useNativeDriver: true,
+				}),
+			]).start(() => {
+				setCurrentIndex((prev) => (prev === infoList.length - 1 ? 0 : prev + 1))
+				// Reset position to top for the next item's entrance
+				translateY.setValue(-20)
+			})
+		}, currentDuration)
+
+		return () => clearTimeout(timeout)
+	}, [currentIndex, infoList])
+
+	const currentInfo = infoList[currentIndex]
+
 	const { projects } = useProjects()
 	const { account } = useAccount()
 	const [search, setSearch] = useState("")
@@ -99,53 +154,70 @@ export default function Index() {
 						</Pressable>
 					</View>
 				</View>
-				<LinearGradient
-					colors={["#1ED208", "#50E2CD"]}
-					start={{ x: 0.14644661, y: 0.14644661 }}
-					end={{ x: 0.85355339, y: 0.85355339 }}
-					style={{
-						marginHorizontal: 20,
-						paddingHorizontal: 15,
-						paddingVertical: 20,
-						borderRadius: 10,
-						display: "flex",
-						flexDirection: "row",
-						alignItems: "center",
-						justifyContent: "center",
-						marginBottom: 20,
+				<Pressable
+					onLongPress={() => {
+						router.push("/ManageInfo")
 					}}
 				>
-					<View style={{ flex: 1 }}>
-						<Text
-							style={{
-								color: "white",
-								fontFamily: "Bold",
-								fontSize: 15,
-								textShadowColor: "rgba(0,0,0,0.6)",
-								textShadowOffset: { width: 0, height: 1 },
-								textShadowRadius: 3,
-								marginBottom: 10,
-								textAlign: "center",
-							}}
+					<LinearGradient
+						colors={["#1ED208", "#50E2CD"]}
+						start={{ x: 0.14644661, y: 0.14644661 }}
+						end={{ x: 0.85355339, y: 0.85355339 }}
+						style={{
+							marginHorizontal: 20,
+							paddingHorizontal: 15,
+							paddingVertical: 20,
+							borderRadius: 10,
+							display: "flex",
+							flexDirection: "row",
+							alignItems: "center",
+							justifyContent: "center",
+							marginBottom: 20,
+							height: 150,
+						}}
+					>
+						<View
+							style={{ flex: 1, justifyContent: "center", overflow: "hidden" }}
 						>
-							Glass can be recycled endlessly without losing quality or purity.
-						</Text>
-						<Text
-							style={{
-								color: "white",
-								fontFamily: "Regular",
-								fontSize: 10,
-								textShadowColor: "rgba(0,0,0,0.5)",
-								textShadowOffset: { width: 0, height: 1 },
-								textShadowRadius: 2,
-								textAlign: "center",
-							}}
-						>
-							Each ton of recycled glass saves over a ton of natural resources,
-							including sand, soda ash, and limestone.
-						</Text>
-					</View>
-				</LinearGradient>
+							{currentInfo && (
+								<Animated.View
+									style={{
+										opacity: opacity, // Bind opacity to animated value
+										transform: [{ translateY: translateY }], // Bind Y position to animated value
+									}}
+								>
+									<Text
+										style={{
+											color: "white",
+											fontFamily: "Bold",
+											fontSize: 15,
+											textShadowColor: "rgba(0,0,0,0.6)",
+											textShadowOffset: { width: 0, height: 1 },
+											textShadowRadius: 3,
+											marginBottom: 10,
+											textAlign: "center",
+										}}
+									>
+										{currentInfo.message}
+									</Text>
+									<Text
+										style={{
+											color: "white",
+											fontFamily: "Regular",
+											fontSize: 10,
+											textShadowColor: "rgba(0,0,0,0.5)",
+											textShadowOffset: { width: 0, height: 1 },
+											textShadowRadius: 2,
+											textAlign: "center",
+										}}
+									>
+										{currentInfo.description}
+									</Text>
+								</Animated.View>
+							)}
+						</View>
+					</LinearGradient>
+				</Pressable>
 				<View
 					style={{
 						marginHorizontal: 20,

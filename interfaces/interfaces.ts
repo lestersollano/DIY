@@ -11,6 +11,7 @@ export interface Project {
 	createdAt?: number
 	lastOpenedAt?: number
 	favorite?: boolean
+	youtubeURL?: string
 }
 
 export interface Account {
@@ -19,4 +20,5 @@ export interface Account {
 	email: string
 	avatarUri?: string
 	createdAt: number
+	password?: string
 }

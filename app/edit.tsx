@@ -3,8 +3,8 @@ import { useProjects } from "@/lib/ProjectsContext"
 import Ionicons from "@react-native-vector-icons/ionicons"
 import * as ImagePicker from "expo-image-picker"
 import { LinearGradient } from "expo-linear-gradient"
-import { useRouter } from "expo-router"
-import { useState } from "react"
+import { useLocalSearchParams, useRouter } from "expo-router"
+import { useEffect, useState } from "react"
 import {
 	Image,
 	ImageBackground,
@@ -16,8 +16,9 @@ import {
 	View,
 } from "react-native"
 
-export default function Create() {
-	const { addProject } = useProjects()
+export default function Edit() {
+	const { id } = useLocalSearchParams()
+	const { projects, updateProject } = useProjects()
 	const { account } = useAccount()
 
 	const [form, setForm] = useState({
@@ -134,9 +135,36 @@ export default function Create() {
 		}
 	}
 
+	useEffect(() => {
+		if (projects) {
+			const project = projects.find((item) => item.id === id)
+			setForm({
+				...form,
+				// @ts-ignore
+				imageUri: project?.imageUri,
+				// @ts-ignore
+				title: project?.title,
+				// @ts-ignore
+				description: project?.description,
+				// @ts-ignore
+				materials: project?.materials,
+				// @ts-ignore
+				instructions: project?.instructions,
+				// @ts-ignore
+				notes: project?.notes,
+				// @ts-ignore
+				mainMaterial: project?.mainMaterial,
+				// @ts-ignore
+				author: project?.author,
+				// @ts-ignore
+				youtubeURL: project?.youtubeURL,
+			})
+		}
+	}, [projects])
+
 	return (
 		<ImageBackground
-			source={require("../../../assets/images/background.png")}
+			source={require("@/assets/images/background.png")}
 			style={{
 				flex: 1,
 				backgroundColor: "black",
@@ -693,7 +721,8 @@ export default function Create() {
 					</View>
 					<TouchableOpacity
 						onPress={async () => {
-							await addProject(form, form.imageUri)
+							// @ts-ignore
+							await updateProject(id, form, form.imageUri)
 							console.log(form)
 							router.back()
 						}}
