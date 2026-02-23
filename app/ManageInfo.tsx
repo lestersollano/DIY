@@ -1,9 +1,8 @@
 import HeaderBack from "@/components/headerBack"
-import { Info, useInfo } from "@/lib/InfoContext"
+import { deleteData, fetchData, insertData } from "@/supabase/database"
 import { PlusIcon, TrashIcon } from "lucide-react-native"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
-	Alert,
 	FlatList,
 	StyleSheet,
 	Text,
@@ -12,43 +11,79 @@ import {
 	View,
 } from "react-native"
 
-export default function ManageInfo() {
-	const { infoList, addNewInfo, deleteInfo } = useInfo()
+interface InfoItem {
+	id: number
+	title: string
+	message: string
+	duration: number
+}
 
-	// Local state for the input form
+export default function ManageInfo() {
+	const [infoList, setInfoList] = useState<InfoItem[]>([])
 	const [message, setMessage] = useState("")
 	const [description, setDescription] = useState("")
-	const [duration, setDuration] = useState("5")
+	const [duration, setDuration] = useState("")
+	const [loading, setLoading] = useState(true)
+
+	// Fetch data on mount
+	useEffect(() => {
+		loadInfo()
+	}, [])
+
+	const loadInfo = async () => {
+		try {
+			setLoading(true)
+			const data = await fetchData("DIY Trivia Wheel")
+			setInfoList(data || [])
+		} catch (error) {
+			console.error("Error loading info: ", error)
+		} finally {
+			setLoading(false)
+		}
+	}
 
 	const handleAdd = async () => {
 		if (!message.trim() || !description.trim()) {
-			Alert.alert("Error", "Please fill in both fields")
+			alert("Please fill in all fields")
 			return
 		}
 
-		// Convert duration string to a number (seconds to milliseconds)
-		const durationNum = parseInt(duration)
-		if (isNaN(durationNum) || durationNum <= 0) {
-			Alert.alert("Error", "Please enter a valid number for duration")
-			return
+		const data = {
+			title: message,
+			description: description,
+			duration: parseInt(duration) || 5,
 		}
 
-		// Note: We'll pass duration to addNewInfo once we update the context
-		await addNewInfo(message, description, durationNum)
-
-		setMessage("")
-		setDescription("")
-		setDuration("5") // Reset to default
+		try {
+			await insertData("DIY Trivia Wheel", data)
+			setMessage("")
+			setDescription("")
+			setDuration("5")
+			await loadInfo() // Refresh list
+			alert("Info added successfully!")
+		} catch (error) {
+			console.error("Error: ", error)
+		}
 	}
 
-	const renderItem = ({ item }: { item: Info }) => (
+	const handleDelete = async (id: number) => {
+		try {
+			await deleteData("DIY Trivia Wheel", id)
+			await loadInfo() // Refresh list
+		} catch (error) {
+			console.error("Error deleting: ", error)
+		}
+	}
+
+	const renderItem = ({ item }: { item: InfoItem }) => (
 		<View style={styles.infoCard}>
 			<View style={styles.textContainer}>
-				<Text style={styles.infoMessage}>{item.message}</Text>
-				<Text style={styles.infoDescription}>{item.description}</Text>
+				<Text style={styles.infoMessage}>{item.title}</Text>
+				<Text style={styles.infoDescription}>{item.message}</Text>
+				<Text style={styles.infoDuration}>{item.duration}s</Text>
 			</View>
 			<TouchableOpacity
-				onPress={() => deleteInfo(item.id)}
+				onPress={() => handleDelete(item.id)}
 				style={styles.deleteButton}
 			>
 				<TrashIcon color="#ff4444" size={20} />
@@ -69,14 +104,13 @@ export default function ManageInfo() {
 					onChangeText={setMessage}
 				/>
 
-				{/* New Duration Input */}
 				<TextInput
 					style={styles.input}
 					placeholder="Duration (seconds)"
 					placeholderTextColor="#888"
 					value={duration}
 					onChangeText={setDuration}
-					keyboardType="numeric" // Shows numeric keypad
+					keyboardType="numeric"
 				/>
 
 				<TextInput
@@ -96,14 +130,15 @@ export default function ManageInfo() {
 
 			<View style={styles.divider} />
 
-			{/* List of Info */}
 			<FlatList
 				data={infoList}
-				keyExtractor={(item) => item.id}
+				keyExtractor={(item) => item.id.toString()}
 				renderItem={renderItem}
 				contentContainerStyle={styles.listContent}
 				ListEmptyComponent={
-					<Text style={styles.emptyText}>No info items yet.</Text>
+					<Text style={styles.emptyText}>
+						{loading ? "Loading..." : "No info items yet."}
+					</Text>
 				}
 			/>
 		</View>
@@ -155,6 +190,12 @@ const styles = StyleSheet.create({
 		marginBottom: 4,
 	},
 	infoDescription: { color: "#aaa", fontFamily: "Regular", fontSize: 12 },
+	infoDuration: {
+		color: "#1ED208",
+		fontFamily: "Regular",
+		fontSize: 11,
+		marginTop: 4,
+	},
 	deleteButton: { padding: 8 },
 	emptyText: {
 		color: "#555",
