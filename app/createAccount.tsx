@@ -1,6 +1,7 @@
 import HeaderBack from "@/components/headerBack"
 import type { Account } from "@/interfaces/interfaces"
 import { useAccount } from "@/lib/AccountContext"
+import { signUp } from "@/supabase/auth"
 import * as ImagePicker from "expo-image-picker"
 import { useRouter } from "expo-router"
 import { MailIcon, PlusIcon, UserIcon } from "lucide-react-native"
@@ -233,6 +234,8 @@ export default function CreateAccount() {
 								form.name !== "" &&
 								password.length >= 8
 							) {
+								// @ts-ignore
+								await signUp(form.email, password, form.avatarUri, form.name)
 								await setAccount(form, form.avatarUri)
 								router.back()
 							}

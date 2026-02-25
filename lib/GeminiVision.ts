@@ -3,7 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai"
 // Initialize the API client
 // best practice: store your key in an environment variable
 const genAI = new GoogleGenerativeAI(
-	process.env.GEMINI_API_KEY || "AIzaSyBIYSuwcBKZeBKkhWdo0G34TmMUgN2nUGM",
+	process.env.GEMINI_API_KEY || "AIzaSyCLHR0vbLKzusknR7GNUsNqnQ6rvhkdBn8",
 )
 
 /**

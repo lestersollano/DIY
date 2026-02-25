@@ -43,3 +43,8 @@ app-example
 /android
 
 kaggle-garbage-dataset
+
+.env
+
+venv
+__pycache__

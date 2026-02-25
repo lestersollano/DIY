@@ -1,10 +1,14 @@
 import { useAccount } from "@/lib/AccountContext"
 import { useProjects } from "@/lib/ProjectsContext"
+import { fetchData } from "@/supabase/database"
+import { uploadImage } from "@/supabase/storage"
+import * as ImagePicker from "expo-image-picker"
 import { LinearGradient } from "expo-linear-gradient"
 import { useRouter } from "expo-router"
 import { SearchIcon, SettingsIcon } from "lucide-react-native"
 import { useEffect, useRef, useState } from "react"
 import {
+	Alert,
 	Animated,
 	Image,
 	ImageBackground,
@@ -17,18 +21,73 @@ import {
 } from "react-native"
 import ProjectCard from "../../../components/projectCard"
 
-import { useInfo } from "@/lib/InfoContext"
-
 export default function Index() {
-	const { infoList } = useInfo()
+	const [triviaList, setTriviaList] = useState<
+		{ message: string; description: string; duration: number }[]
+	>([])
 	const [currentIndex, setCurrentIndex] = useState(0)
+	const [uploading, setUploading] = useState(false)
+
+	const handleLogoPress = async () => {
+		setUploading(true)
+		try {
+			const result = await ImagePicker.launchImageLibraryAsync({
+				mediaTypes: ImagePicker.MediaTypeOptions.Images,
+				allowsEditing: true,
+				aspect: [1, 1],
+				quality: 0.8,
+			})
+
+			if (!result.canceled) {
+				const uri = result.assets[0].uri
+
+				console.log("Image picked:", { uri })
+
+				// Upload URL for Supabase storage
+				const uploadUrl = "http://192.168.254.107:8000/upload"
+
+				// Upload to supabase storage
+				const data = await uploadImage(uploadUrl, uri)
+
+				Alert.alert("Success", "Image uploaded successfully")
+				console.log("Upload response:", data)
+			}
+		} catch (error) {
+			console.error("Upload error:", error)
+			Alert.alert(
+				"Error",
+				`Failed to upload image: ${error instanceof Error ? error.message : String(error)}`,
+			)
+		} finally {
+			setUploading(false)
+		}
+	}
+
+	// Fetch trivia data from database
+	useEffect(() => {
+		const loadTrivia = async () => {
+			try {
+				const data = await fetchData("DIY Trivia Wheel")
+				// Transform the data structure: title -> message, message -> description
+				const transformed = data.map((item: any) => ({
+					message: item.title,
+					description: item.message,
+					duration: item.duration,
+				}))
+				setTriviaList(transformed)
+			} catch (error) {
+				console.error("Failed to fetch trivia data:", error)
+			}
+		}
+		loadTrivia()
+	}, [])
 
 	// Animated values
 	const translateY = useRef(new Animated.Value(-20)).current // Starts 20px above
 	const opacity = useRef(new Animated.Value(0)).current // Starts invisible
 
 	useEffect(() => {
-		if (infoList.length === 0) return
+		if (triviaList.length === 0) return
 
 		// 1. IMMEDIATELY trigger the "Slide In" animation for the current item
 		Animated.parallel([
@@ -45,7 +104,7 @@ export default function Index() {
 		]).start()
 
 		// 2. Set the timer for the "Slide Out" and Index change
-		const currentDuration = (infoList[currentIndex]?.duration || 5) * 1000
+		const currentDuration = (triviaList[currentIndex]?.duration || 5) * 1000
 
 		const timeout = setTimeout(() => {
 			// Slide Out Animation
@@ -61,16 +120,18 @@ export default function Index() {
 					useNativeDriver: true,
 				}),
 			]).start(() => {
-				setCurrentIndex((prev) => (prev === infoList.length - 1 ? 0 : prev + 1))
+				setCurrentIndex((prev) =>
+					prev === triviaList.length - 1 ? 0 : prev + 1,
+				)
 				// Reset position to top for the next item's entrance
 				translateY.setValue(-20)
 			})
 		}, currentDuration)
 
 		return () => clearTimeout(timeout)
-	}, [currentIndex, infoList])
+	}, [currentIndex, triviaList])
 
-	const currentInfo = infoList[currentIndex]
+	const currentInfo = triviaList[currentIndex]
 
 	const { projects } = useProjects()
 	const { account } = useAccount()
@@ -105,11 +166,17 @@ export default function Index() {
 						alignItems: "center",
 					}}
 				>
-					<Image
-						source={require("../../../assets/images/transparent.png")}
-						style={{ width: 125, height: 125, marginLeft: 10 }}
-						resizeMode="contain"
-					/>
+					<Pressable
+						onLongPress={handleLogoPress}
+						disabled={uploading}
+						style={{ opacity: uploading ? 0.6 : 1 }}
+					>
+						<Image
+							source={require("../../../assets/images/transparent.png")}
+							style={{ width: 125, height: 125, marginLeft: 10 }}
+							resizeMode="contain"
+						/>
+					</Pressable>
 					<View
 						style={{
 							flexDirection: "row",
