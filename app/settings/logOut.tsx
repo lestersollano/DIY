@@ -1,5 +1,6 @@
 import HeaderBack from "@/components/headerBack"
 import { useAccount } from "@/lib/AccountContext"
+import { signOut } from "@/supabase/auth"
 import { useRouter } from "expo-router"
 import { ImageBackground, Text, TouchableOpacity, View } from "react-native"
 
@@ -8,9 +9,11 @@ export default function LogOut() {
 	const router = useRouter()
 
 	const handlePress = async () => {
+		await signOut()
 		await clearAccount()
 		router.replace("/createAccount")
 	}
+
 	return (
 		<ImageBackground
 			source={require("../../assets/images/background.png")}

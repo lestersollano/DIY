@@ -256,6 +256,23 @@ export default function CreateAccount() {
 							CREATE
 						</Text>
 					</TouchableOpacity>
+					<TouchableOpacity
+						onPress={() => {
+							router.replace("/signIn")
+						}}
+					>
+						<Text
+							style={{
+								fontFamily: "Regular",
+								color: "#1ed208",
+								textDecorationLine: "underline",
+								textAlign: "center",
+								marginTop: 20,
+							}}
+						>
+							Sign in instead
+						</Text>
+					</TouchableOpacity>
 				</View>
 			</View>
 		</ImageBackground>

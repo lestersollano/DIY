@@ -1,8 +1,10 @@
 import HeaderBack from "@/components/headerBack"
-import { useProjects } from "@/lib/ProjectsContext"
+import { getUser } from "@/supabase/auth"
+import { deleteData, fetchData } from "@/supabase/database"
 import { LinearGradient } from "expo-linear-gradient"
 import { useLocalSearchParams, useRouter } from "expo-router"
-import { PencilIcon, TrashIcon } from "lucide-react-native"
+import { FlagOffIcon, PencilIcon, TrashIcon } from "lucide-react-native"
+import { useEffect, useState } from "react"
 import {
 	Alert,
 	Image,
@@ -19,9 +21,34 @@ export default function Project() {
 
 	const { id } = useLocalSearchParams<{ id: string }>()
 
-	const { projects, deleteProject } = useProjects()
+	const [projects, setProjects] = useState<any>([])
+	const [username, setUsername] = useState("")
 
-	const project = projects.find((p) => p.id === id)
+	useEffect(() => {
+		async function init() {
+			const data = await fetchData("DIY Project")
+			console.log(data)
+			setProjects(data)
+		}
+		init()
+		async function inita() {
+			try {
+				const { email } = await getUser()
+				const data = await fetchData("DIY Account Information")
+				console.log(data)
+				const usern = data.find((item) => item.email == email).username
+				console.log(usern)
+				setUsername(usern)
+			} catch (e) {
+				console.log("something went wrong")
+				throw e
+			}
+		}
+		inita()
+	}, [])
+
+	// @ts-ignore
+	const project = projects.find((p) => p.id == id)
 
 	const openYouTube = async () => {
 		const url = project?.youtubeURL
@@ -36,7 +63,16 @@ export default function Project() {
 	}
 
 	if (!project) {
-		return null
+		return (
+			<View
+				style={{
+					flex: 1,
+					backgroundColor: "black",
+				}}
+			>
+				<HeaderBack title="Loading"></HeaderBack>
+			</View>
+		)
 	}
 
 	return (
@@ -156,6 +192,7 @@ export default function Project() {
 						Materials Needed:
 					</Text>
 					{project?.materials !== undefined ? (
+						// @ts-ignore
 						project?.materials.map((material, index) => (
 							<Text
 								key={index}
@@ -222,6 +259,7 @@ export default function Project() {
 						Instructions:
 					</Text>
 					{project?.instructions !== undefined ? (
+						// @ts-ignore
 						project?.instructions.map((inst, index) => (
 							<Text
 								key={index}
@@ -245,8 +283,17 @@ export default function Project() {
 						justifyContent: "flex-end",
 						padding: 20,
 						gap: 10,
+						marginBottom: 200,
 					}}
 				>
+					<TouchableOpacity
+						onPress={() => {}}
+						style={{
+							display: project.author == username ? "none" : "flex",
+						}}
+					>
+						<FlagOffIcon color={"grey"} />
+					</TouchableOpacity>
 					<TouchableOpacity
 						onPress={() => {
 							router.push({
@@ -257,10 +304,16 @@ export default function Project() {
 								},
 							})
 						}}
+						style={{
+							display: project.author == username ? "flex" : "none",
+						}}
 					>
 						<PencilIcon color={"grey"} />
 					</TouchableOpacity>
 					<TouchableOpacity
+						style={{
+							display: project.author == username ? "flex" : "none",
+						}}
 						onPress={() => {
 							Alert.alert(
 								"Delete Project",
@@ -277,8 +330,12 @@ export default function Project() {
 										text: "Delete",
 										onPress: () => {
 											// @ts-ignore
-											deleteProject(project.id)
-											router.back()
+											// deleteProject(project.id)
+											async function wawa() {
+												await deleteData("DIY Project", Number(id))
+												router.back()
+											}
+											wawa()
 										},
 										style: "destructive",
 									},

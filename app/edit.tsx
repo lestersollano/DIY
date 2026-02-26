@@ -1,5 +1,6 @@
 import { useAccount } from "@/lib/AccountContext"
-import { useProjects } from "@/lib/ProjectsContext"
+import { fetchData, updateData } from "@/supabase/database"
+import { uploadImage } from "@/supabase/storage"
 import Ionicons from "@react-native-vector-icons/ionicons"
 import * as ImagePicker from "expo-image-picker"
 import { LinearGradient } from "expo-linear-gradient"
@@ -18,7 +19,7 @@ import {
 
 export default function Edit() {
 	const { id } = useLocalSearchParams()
-	const { projects, updateProject } = useProjects()
+	const [projects, setProjects] = useState<any>([])
 	const { account } = useAccount()
 
 	const [form, setForm] = useState({
@@ -32,6 +33,14 @@ export default function Edit() {
 		author: account?.name,
 		youtubeURL: "",
 	})
+
+	useEffect(() => {
+		async function init() {
+			const data = await fetchData("DIY Project")
+			setProjects(data)
+		}
+		init()
+	}, [])
 
 	const updateField = (key: string, value: string) => {
 		setForm((prev) => ({
@@ -136,31 +145,30 @@ export default function Edit() {
 	}
 
 	useEffect(() => {
-		if (projects) {
-			const project = projects.find((item) => item.id === id)
-			setForm({
-				...form,
-				// @ts-ignore
-				imageUri: project?.imageUri,
-				// @ts-ignore
-				title: project?.title,
-				// @ts-ignore
-				description: project?.description,
-				// @ts-ignore
-				materials: project?.materials,
-				// @ts-ignore
-				instructions: project?.instructions,
-				// @ts-ignore
-				notes: project?.notes,
-				// @ts-ignore
-				mainMaterial: project?.mainMaterial,
-				// @ts-ignore
-				author: project?.author,
-				// @ts-ignore
-				youtubeURL: project?.youtubeURL,
-			})
-		}
-	}, [projects])
+		if (!id || projects.length === 0) return
+
+		const projectId = Number(id)
+		const project = projects.find((item) => item.id === projectId)
+
+		if (!project) return
+
+		setForm((prev) => ({
+			...prev,
+			imageUri: project.imageUri ?? "",
+			title: project.title ?? "",
+			description: project.description ?? "",
+			materials: project.materials ?? [""],
+			instructions: project.instructions ?? [""],
+			notes: project.notes ?? "",
+			mainMaterial: project.mainMaterial ?? "",
+			author: project.author ?? account?.name,
+			youtubeURL: project.youtubeURL ?? "",
+		}))
+	}, [id, projects])
+
+	if (!projects) {
+		return null
+	}
 
 	return (
 		<ImageBackground
@@ -722,7 +730,12 @@ export default function Edit() {
 					<TouchableOpacity
 						onPress={async () => {
 							// @ts-ignore
-							await updateProject(id, form, form.imageUri)
+							const imageLink = await uploadImage(
+								"https://lestersollano-diy-yolo.hf.space/upload",
+								form.imageUri,
+							)
+							const final = { ...form, imageUri: imageLink.url }
+							await updateData("DIY Project", final, Number(id))
 							console.log(form)
 							router.back()
 						}}

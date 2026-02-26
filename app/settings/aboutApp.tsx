@@ -96,6 +96,7 @@ export default function AboutApp() {
 							fontFamily: "Regular",
 							textAlign: "justify",
 							lineHeight: 24,
+							marginBottom: 200,
 						}}
 					>
 						By using image recognition technology, the app provides real-time

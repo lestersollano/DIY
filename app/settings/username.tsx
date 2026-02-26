@@ -1,5 +1,7 @@
 import HeaderBack from "@/components/headerBack"
 import { useAccount } from "@/lib/AccountContext"
+import { getUser } from "@/supabase/auth"
+import { fetchData, updateData } from "@/supabase/database"
 import { useRouter } from "expo-router"
 import { UserIcon } from "lucide-react-native"
 import { useEffect, useState } from "react"
@@ -97,6 +99,15 @@ export default function Username() {
 						}}
 						onPress={async () => {
 							if (username !== "") {
+								//@ts-ignore
+								const { email } = await getUser()
+								const data = await fetchData("DIY Account Information")
+								const id = data.find((item) => item.email == email).id
+								await updateData(
+									"DIY Account Information",
+									{ username: username },
+									id,
+								)
 								await updateAccount({ name: username })
 								router.back()
 							}

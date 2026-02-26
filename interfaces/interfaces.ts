@@ -1,5 +1,5 @@
 export interface Project {
-	id?: string
+	id?: number
 	imageUri?: string
 	title?: string
 	description?: string

@@ -171,7 +171,7 @@ export default function Settings() {
 						</View>
 						<ChevronRightIcon color={"#6B6B6B"} />
 					</TouchableOpacity>
-					<TouchableOpacity
+					{/* <TouchableOpacity
 						style={{
 							borderBottomWidth: 0,
 
@@ -209,7 +209,7 @@ export default function Settings() {
 							</View>
 						</View>
 						<ChevronRightIcon color={"#6B6B6B"} />
-					</TouchableOpacity>
+					</TouchableOpacity> */}
 					<TouchableOpacity
 						style={{
 							marginHorizontal: 20,
@@ -294,7 +294,7 @@ export default function Settings() {
 						</View>
 						<ChevronRightIcon color={"#6B6B6B"} />
 					</TouchableOpacity>
-					<TouchableOpacity
+					{/* <TouchableOpacity
 						style={{
 							marginHorizontal: 20,
 							paddingVertical: 20,
@@ -330,7 +330,7 @@ export default function Settings() {
 							</View>
 						</View>
 						<ChevronRightIcon color={"#6B6B6B"} />
-					</TouchableOpacity>
+					</TouchableOpacity> */}
 					<TouchableOpacity
 						style={{
 							marginHorizontal: 20,

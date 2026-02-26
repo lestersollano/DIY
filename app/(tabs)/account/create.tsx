@@ -1,5 +1,6 @@
 import { useAccount } from "@/lib/AccountContext"
-import { useProjects } from "@/lib/ProjectsContext"
+import { insertData } from "@/supabase/database"
+import { uploadImage } from "@/supabase/storage"
 import Ionicons from "@react-native-vector-icons/ionicons"
 import * as ImagePicker from "expo-image-picker"
 import { LinearGradient } from "expo-linear-gradient"
@@ -17,7 +18,6 @@ import {
 } from "react-native"
 
 export default function Create() {
-	const { addProject } = useProjects()
 	const { account } = useAccount()
 
 	const [form, setForm] = useState({
@@ -693,8 +693,12 @@ export default function Create() {
 					</View>
 					<TouchableOpacity
 						onPress={async () => {
-							await addProject(form, form.imageUri)
 							console.log(form)
+							const img = await uploadImage(
+								"https://lestersollano-diy-yolo.hf.space/upload",
+								form.imageUri,
+							)
+							await insertData("DIY Project", { ...form, imageUri: img.url })
 							router.back()
 						}}
 					>

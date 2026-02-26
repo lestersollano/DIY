@@ -1,14 +1,12 @@
+import { Project } from "@/interfaces/interfaces"
 import { useAccount } from "@/lib/AccountContext"
-import { useProjects } from "@/lib/ProjectsContext"
+import { getUser } from "@/supabase/auth"
 import { fetchData } from "@/supabase/database"
-import { uploadImage } from "@/supabase/storage"
-import * as ImagePicker from "expo-image-picker"
 import { LinearGradient } from "expo-linear-gradient"
-import { useRouter } from "expo-router"
+import { useFocusEffect, useRouter } from "expo-router"
 import { SearchIcon, SettingsIcon } from "lucide-react-native"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import {
-	Alert,
 	Animated,
 	Image,
 	ImageBackground,
@@ -22,6 +20,11 @@ import {
 import ProjectCard from "../../../components/projectCard"
 
 export default function Index() {
+	const [projects, setProjects] = useState<Project[]>([])
+	const [user, setUser] = useState<any>({})
+	const [antid, setantid] = useState<any>()
+	const [favorites, setFavorites] = useState<any>([])
+
 	const [triviaList, setTriviaList] = useState<
 		{ message: string; description: string; duration: number }[]
 	>([])
@@ -29,39 +32,76 @@ export default function Index() {
 	const [uploading, setUploading] = useState(false)
 
 	const handleLogoPress = async () => {
-		setUploading(true)
-		try {
-			const result = await ImagePicker.launchImageLibraryAsync({
-				mediaTypes: ImagePicker.MediaTypeOptions.Images,
-				allowsEditing: true,
-				aspect: [1, 1],
-				quality: 0.8,
-			})
-
-			if (!result.canceled) {
-				const uri = result.assets[0].uri
-
-				console.log("Image picked:", { uri })
-
-				// Upload URL for Supabase storage
-				const uploadUrl = "http://192.168.254.107:8000/upload"
-
-				// Upload to supabase storage
-				const data = await uploadImage(uploadUrl, uri)
-
-				Alert.alert("Success", "Image uploaded successfully")
-				console.log("Upload response:", data)
-			}
-		} catch (error) {
-			console.error("Upload error:", error)
-			Alert.alert(
-				"Error",
-				`Failed to upload image: ${error instanceof Error ? error.message : String(error)}`,
-			)
-		} finally {
-			setUploading(false)
-		}
+		// setUploading(true)
+		// try {
+		// 	const result = await ImagePicker.launchImageLibraryAsync({
+		// 		mediaTypes: ImagePicker.MediaTypeOptions.Images,
+		// 		allowsEditing: true,
+		// 		aspect: [1, 1],
+		// 		quality: 0.8,
+		// 	})
+		// 	if (!result.canceled) {
+		// 		const uri = result.assets[0].uri
+		// 		console.log("Image picked:", { uri })
+		// 		// Upload URL for Supabase storage
+		// 		const uploadUrl = "https://lestersollano-diy-yolo.hf.space/upload"
+		// 		// Upload to supabase storage
+		// 		const data = await uploadImage(uploadUrl, uri)
+		// 		Alert.alert("Success", "Image uploaded successfully")
+		// 		console.log("Upload response:", data)
+		// 	}
+		// } catch (error) {
+		// 	console.error("Upload error:", error)
+		// 	Alert.alert(
+		// 		"Error",
+		// 		`Failed to upload image: ${error instanceof Error ? error.message : String(error)}`,
+		// 	)
+		// } finally {
+		// 	setUploading(false)
+		// }
+		// router.push("/signIn")
+		// const data = await getUser()
+		// console.log(data?.email)
+		// const { email } = await getUser()
+		// console.log(email)
+		const { email } = await getUser()
+		const data = await fetchData("DIY Account Information")
+		const history = data.find((item) => item.email == email).history
+		console.log(history)
 	}
+
+	useFocusEffect(
+		useCallback(() => {
+			let isActive = true
+
+			async function init() {
+				try {
+					const uzer = await getUser()
+					if (!isActive) return
+
+					setUser(uzer)
+
+					const info = await fetchData("DIY Account Information")
+					const akawnt = info.find((i) => i.email === uzer?.email)
+
+					if (!isActive) return
+					setFavorites(akawnt?.favorites ?? [])
+					setantid(akawnt?.id)
+				} catch (e) {
+					console.log(e)
+				}
+
+				const data = await fetchData("DIY Project")
+				if (isActive) setProjects(data)
+			}
+
+			init()
+
+			return () => {
+				isActive = false
+			}
+		}, []),
+	)
 
 	// Fetch trivia data from database
 	useEffect(() => {
@@ -133,7 +173,6 @@ export default function Index() {
 
 	const currentInfo = triviaList[currentIndex]
 
-	const { projects } = useProjects()
 	const { account } = useAccount()
 	const [search, setSearch] = useState("")
 	const [material, setMaterial] = useState("")
@@ -426,7 +465,12 @@ export default function Index() {
 					}}
 				>
 					{filteredProjects.map((project, index) => (
-						<ProjectCard key={index} project={project} />
+						<ProjectCard
+							key={index}
+							project={project}
+							fav={favorites}
+							antid={antid}
+						/>
 					))}
 				</ScrollView>
 			</View>

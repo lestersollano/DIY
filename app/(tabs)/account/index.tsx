@@ -1,10 +1,13 @@
 import ProjectCard from "@/components/projectCard"
+import { Project } from "@/interfaces/interfaces"
 import { useAccount } from "@/lib/AccountContext"
-import { useProjects } from "@/lib/ProjectsContext"
+import { getUser } from "@/supabase/auth"
+// import { useProjects } from "@/lib/ProjectsContext"
+import { fetchData } from "@/supabase/database"
 import Ionicons from "@react-native-vector-icons/ionicons"
 import { LinearGradient } from "expo-linear-gradient"
 import { useFocusEffect, useRouter } from "expo-router"
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 import {
 	Image,
 	ImageBackground,
@@ -17,8 +20,46 @@ import {
 
 export default function Account() {
 	const router = useRouter()
-	const { projects } = useProjects()
+	// const { projects } = useProjects()
 	const { account, loading } = useAccount()
+
+	const [projects, setProjects] = useState<Project[]>([])
+	const [user, setUser] = useState<any>({})
+	const [antid, setantid] = useState<any>()
+	const [favorites, setFavorites] = useState<any>([])
+
+	useFocusEffect(
+		useCallback(() => {
+			let isActive = true
+
+			async function init() {
+				try {
+					const uzer = await getUser()
+					if (!isActive) return
+
+					setUser(uzer)
+
+					const info = await fetchData("DIY Account Information")
+					const akawnt = info.find((i) => i.email === uzer?.email)
+
+					if (!isActive) return
+					setFavorites(akawnt?.favorites ?? [])
+					setantid(akawnt?.id)
+				} catch (e) {
+					console.log(e)
+				}
+
+				const data = await fetchData("DIY Project")
+				if (isActive) setProjects(data)
+			}
+
+			init()
+
+			return () => {
+				isActive = false
+			}
+		}, []),
+	)
 
 	useFocusEffect(
 		useCallback(() => {
@@ -152,7 +193,7 @@ export default function Account() {
 								textShadowRadius: 3,
 							}}
 						>
-							{projects.filter((p) => p.favorite).length}
+							{new Set(favorites).size}
 						</Text>
 					</View>
 				</ImageBackground>
@@ -212,7 +253,7 @@ export default function Account() {
 					}}
 				>
 					{projects.map((project, index) => (
-						<ProjectCard key={index} project={project} />
+						<ProjectCard key={index} project={project} fav={favorites} antid />
 					))}
 				</View>
 			</ScrollView>

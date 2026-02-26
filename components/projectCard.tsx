@@ -1,12 +1,38 @@
 import type { Project } from "@/interfaces/interfaces"
-import { useProjects } from "@/lib/ProjectsContext"
+import { getUser } from "@/supabase/auth"
+import { fetchData, updateData } from "@/supabase/database"
 import { Ionicons } from "@react-native-vector-icons/ionicons"
 import { useRouter } from "expo-router"
-import { Image, Pressable, Text, TouchableOpacity, View } from "react-native"
+import { useState } from "react"
+import { Image, Text, TouchableOpacity, View } from "react-native"
 
-export default function ProjectCard({ project }: { project: Project }) {
+export default function ProjectCard({
+	project,
+	fav,
+	antid,
+}: {
+	project: Project
+	fav: any
+	antid: any
+}) {
 	const router = useRouter()
-	const { updateProject } = useProjects()
+	const [favorite, setFavorite] = useState(fav.includes(project.id))
+
+	function upsertLastOpened(id: any, arr: any) {
+		const now = Date.now()
+
+		const index = arr.findIndex((item) => item.id === id)
+
+		// If ID exists → update lastOpenedAt
+		if (index !== -1) {
+			return arr.map((item, i) =>
+				i === index ? { ...item, lastOpenedAt: now } : item,
+			)
+		}
+
+		// If ID does not exist → add new object
+		return [...arr, { id, lastOpenedAt: now }]
+	}
 
 	return (
 		<TouchableOpacity
@@ -18,12 +44,26 @@ export default function ProjectCard({ project }: { project: Project }) {
 				flexDirection: "row",
 				marginBottom: 20,
 			}}
-			onPress={() => {
+			onPress={async () => {
 				console.log(project)
-				updateProject({
-					...project,
-					lastOpenedAt: Date.now(),
-				})
+				try {
+					const { email } = await getUser()
+					console.log("got user")
+					const data = await fetchData("DIY Account Information")
+					console.log("got db")
+					const history = data.find((item) => item.email == email).history
+					console.log(history)
+					const id = data.find((item) => item.email == email).id
+
+					updateData(
+						"DIY Account Information",
+						{ history: upsertLastOpened(project.id, history) },
+						id,
+					)
+				} catch {
+					console.log("something went wrong")
+				}
+
 				router.push({
 					pathname: "/project",
 					params: { id: project.id },
@@ -76,29 +116,30 @@ export default function ProjectCard({ project }: { project: Project }) {
 							by {project.author}
 						</Text>
 					</View>
-					<Pressable
-						onPress={(e) => {
-							e.stopPropagation()
-							console.log(project)
-							if (project.favorite === undefined) {
-								updateProject({
-									...project,
-									favorite: true,
-								})
-								return
+					<TouchableOpacity
+						onPress={() => {
+							if (favorite) {
+								updateData(
+									"DIY Account Information",
+									{ favorites: fav.filter((n) => n != project.id) },
+									antid,
+								)
+							} else {
+								updateData(
+									"DIY Account Information",
+									{ favorites: [...fav, project.id] },
+									antid,
+								)
 							}
-							updateProject({
-								...project,
-								favorite: !project.favorite,
-							})
+							setFavorite(!favorite)
 						}}
 					>
 						<Ionicons
 							name="heart"
 							size={25}
-							color={project.favorite ? "#FF6B6B" : "#5C5C5C"}
+							color={favorite ? "#FF6B6B" : "#5C5C5C"}
 						/>
-					</Pressable>
+					</TouchableOpacity>
 				</View>
 				<Text
 					style={{

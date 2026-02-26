@@ -5,7 +5,7 @@ import { uploadImage } from "./storage"
 import supabase from "./supabase"
 
 // Storage configuration
-const STORAGE_UPLOAD_URL = "http://192.168.254.107:8000/upload"
+const STORAGE_UPLOAD_URL = "https://lestersollano-diy-yolo.hf.space/upload"
 
 /**
  * Sign Up
@@ -69,6 +69,7 @@ export async function signOut() {
 	const { error } = await supabase.auth.signOut()
 
 	if (error) throw error
+	console.log("done")
 }
 
 /**
